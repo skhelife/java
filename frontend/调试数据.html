@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>数据调试工具</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #1a1a2e;
+            color: #eee;
+        }
+
+        .section {
+            margin: 20px 0;
+            padding: 15px;
+            background: #16213e;
+            border-radius: 8px;
+        }
+
+        .section h2 {
+            color: #4ecca3;
+            margin-top: 0;
+        }
+
+        pre {
+            background: #0f1419;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+
+        .error {
+            color: #ff6b6b;
+        }
+
+        .success {
+            color: #4ecca3;
+        }
+
+        button {
+            background: #4ecca3;
+            color: #1a1a2e;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+
+        button:hover {
+            background: #45b393;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>🔍 Mock数据调试工具</h1>
+
+    <div class="section">
+        <h2>快速操作</h2>
+        <button onclick="clearData()">清空LocalStorage</button>
+        <button onclick="loadData()">重新加载数据</button>
+        <button onclick="checkData()">检查数据完整性</button>
+    </div>
+
+    <div class="section">
+        <h2>数据概览</h2>
+        <div id="overview"></div>
+    </div>
+
+    <div class="section">
+        <h2>班级数据</h2>
+        <div id="classes"></div>
+    </div>
+
+    <div class="section">
+        <h2>成绩数据 (前10条)</h2>
+        <div id="grades"></div>
+    </div>
+
+    <div class="section">
+        <h2>成绩classId分布</h2>
+        <div id="classIdDist"></div>
+    </div>
+
+    <script type="module">
+        import { getMockData, saveMockData } from './src/services/mockData.ts'
+
+        window.clearData = () => {
+            localStorage.clear()
+            alert('✅ LocalStorage已清空，请重新加载页面')
+            location.reload()
+        }
+
+        window.loadData = () => {
+            saveMockData()
+            alert('✅ 数据已重新生成')
+            checkData()
+        }
+
+        window.checkData = checkData
+
+        function checkData() {
+            const data = getMockData()
+
+            // 数据概览
+            const overview = document.getElementById('overview')
+            overview.innerHTML = `
+                <pre class="success">
+学生总数: ${data.students.length}
+课程总数: ${data.courses.length}
+教师总数: ${data.teachers.length}
+教学班数: ${data.classes.length}
+成绩总数: ${data.grades.length}
+用户总数: ${data.users.length}
+角色总数: ${data.roles.length}
+                </pre>
+            `
+
+            // 班级数据
+            const classes = document.getElementById('classes')
+            classes.innerHTML = `
+                <pre>${JSON.stringify(data.classes, null, 2)}</pre>
+            `
+
+            // 成绩数据前10条
+            const grades = document.getElementById('grades')
+            const first10Grades = data.grades.slice(0, 10)
+            grades.innerHTML = `
+                <pre>${JSON.stringify(first10Grades, null, 2)}</pre>
+            `
+
+            // classId分布
+            const classIdDist = document.getElementById('classIdDist')
+            const distribution = {}
+            data.grades.forEach(g => {
+                const cid = g.classId
+                distribution[cid] = (distribution[cid] || 0) + 1
+            })
+
+            let distHTML = '<pre class="success">'
+            Object.entries(distribution).forEach(([classId, count]) => {
+                const classInfo = data.classes.find(c => c.classId === classId)
+                const course = data.courses.find(c => c.id === classInfo?.courseId)
+                distHTML += `${classId}: ${count}人 (${course?.courseName || '未知'})\n`
+            })
+            distHTML += '</pre>'
+
+            // 检查问题
+            distHTML += '<h3>⚠️ 潜在问题检查:</h3><pre>'
+
+            // 检查1: 是否有成绩的classId不在classes中
+            const validClassIds = new Set(data.classes.map(c => c.classId))
+            const invalidGrades = data.grades.filter(g => !validClassIds.has(g.classId))
+            if (invalidGrades.length > 0) {
+                distHTML += `<span class="error">❌ 发现 ${invalidGrades.length} 条成绩的classId无效</span>\n`
+                distHTML += `无效的classId示例: ${invalidGrades.slice(0, 3).map(g => g.classId).join(', ')}\n`
+            } else {
+                distHTML += `<span class="success">✅ 所有成绩的classId都有效</span>\n`
+            }
+
+            // 检查2: 每个class是否都有学生
+            data.classes.forEach(cls => {
+                const studentCount = data.grades.filter(g => g.classId === cls.classId).length
+                if (studentCount === 0) {
+                    distHTML += `<span class="error">❌ 班级 ${cls.classId} 没有学生</span>\n`
+                } else {
+                    distHTML += `<span class="success">✅ 班级 ${cls.classId} 有 ${studentCount} 名学生</span>\n`
+                }
+            })
+
+            distHTML += '</pre>'
+            classIdDist.innerHTML = distHTML
+        }
+
+        // 页面加载时自动检查
+        checkData()
+    </script>
+</body>
+
+</html>

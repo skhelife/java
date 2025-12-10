@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>强制重置数据</title>
+    <style>
+        body {
+            font-family: 'Microsoft YaHei', Arial, sans-serif;
+            padding: 40px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        h1 {
+            color: #667eea;
+            margin-top: 0;
+        }
+
+        button {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 10px 10px 10px 0;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .output {
+            background: #f5f5f5;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+            font-family: 'Consolas', monospace;
+            white-space: pre-wrap;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        .error {
+            color: #e74c3c;
+        }
+
+        .success {
+            color: #27ae60;
+        }
+
+        .info {
+            color: #3498db;
+        }
+
+        .warning {
+            color: #f39c12;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>🔧 数据重置工具</h1>
+
+        <div>
+            <button onclick="clearStorage()">1️⃣ 清空LocalStorage</button>
+            <button onclick="checkData()">2️⃣ 检查当前数据</button>
+            <button onclick="window.location.reload()">3️⃣ 刷新页面</button>
+            <button onclick="window.location.href='/'">4️⃣ 返回首页</button>
+        </div>
+
+        <div id="output" class="output">等待操作...</div>
+    </div>
+
+    <script type="module">
+        const output = document.getElementById('output');
+
+        function log(message, type = 'info') {
+            const time = new Date().toLocaleTimeString();
+            output.innerHTML += `<div class="${type}">[${time}] ${message}</div>`;
+            output.scrollTop = output.scrollHeight;
+        }
+
+        window.clearStorage = () => {
+            output.innerHTML = '';
+            log('开始清空LocalStorage...', 'info');
+
+            const keys = Object.keys(localStorage);
+            log(`当前有 ${keys.length} 个键: ${keys.join(', ')}`, 'info');
+
+            localStorage.clear();
+            log('✅ LocalStorage已清空', 'success');
+            log('👉 请点击"刷新页面"按钮', 'warning');
+        }
+
+        window.checkData = async () => {
+            output.innerHTML = '';
+            log('📊 开始检查数据...', 'info');
+
+            try {
+                const mockDataStr = localStorage.getItem('mockData');
+
+                if (!mockDataStr) {
+                    log('❌ localStorage中没有mockData', 'error');
+                    log('👉 请刷新页面以初始化数据', 'warning');
+                    return;
+                }
+
+                const data = JSON.parse(mockDataStr);
+
+                log('✅ mockData存在', 'success');
+                log(`- 学生数: ${data.students?.length || 0}`, 'info');
+                log(`- 课程数: ${data.courses?.length || 0}`, 'info');
+                log(`- 教师数: ${data.teachers?.length || 0}`, 'info');
+                log(`- 班级数: ${data.classes?.length || 0}`, 'info');
+                log(`- 成绩数: ${data.grades?.length || 0}`, 'info');
+
+                if (data.classes && data.classes.length > 0) {
+                    log('\n📚 班级详情:', 'info');
+                    data.classes.forEach(cls => {
+                        log(`  ${cls.classId} (ID类型: ${typeof cls.classId})`, 'info');
+                    });
+                }
+
+                if (data.grades && data.grades.length > 0) {
+                    log('\n🎯 成绩classId分布:', 'info');
+                    const classIdMap = {};
+                    data.grades.forEach(g => {
+                        classIdMap[g.classId] = (classIdMap[g.classId] || 0) + 1;
+                    });
+
+                    Object.entries(classIdMap).forEach(([classId, count]) => {
+                        log(`  ${classId}: ${count}人 (类型: ${typeof classId})`, 'info');
+                    });
+
+                    // 检查数据一致性
+                    log('\n⚠️ 数据一致性检查:', 'warning');
+                    const validClassIds = new Set(data.classes.map(c => c.classId));
+                    const gradeClassIds = new Set(data.grades.map(g => g.classId));
+
+                    let hasError = false;
+                    gradeClassIds.forEach(gid => {
+                        if (!validClassIds.has(gid)) {
+                            log(`  ❌ 成绩中的classId "${gid}" 在班级列表中不存在`, 'error');
+                            hasError = true;
+                        }
+                    });
+
+                    if (!hasError) {
+                        log('  ✅ 所有成绩的classId都有效', 'success');
+                    }
+
+                    // 检查每个班级的学生数
+                    log('\n👥 各班级学生统计:', 'info');
+                    data.classes.forEach(cls => {
+                        const count = data.grades.filter(g => g.classId === cls.classId).length;
+                        const course = data.courses.find(c => c.id === cls.courseId);
+                        const status = count === 0 ? '❌' : '✅';
+                        log(`  ${status} ${cls.classId} (${course?.courseName}): ${count}人`, count === 0 ? 'error' : 'success');
+                    });
+                }
+
+            } catch (error) {
+                log(`❌ 检查失败: ${error.message}`, 'error');
+                console.error(error);
+            }
+        }
+
+        // 页面加载时自动检查
+        window.addEventListener('load', () => {
+            setTimeout(checkData, 500);
+        });
+    </script>
+</body>
+
+</html>

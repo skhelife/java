@@ -1,0 +1,240 @@
+// 生成300名学生的Mock数据
+export const generateStudents = (count = 300) =>     let gradeId = 1
+    students.forEach(student => {
+        const numCourses = Math.floor(Math.random() * 3) + 3 // 每个学生3-5门课
+        const selectedClasses = mockClasses.sort(() => 0.5 - Math.random()).slice(0, numCourses)
+
+        selectedClasses.forEach(tc => {
+            const course = mockCourses.find(c => c.id === tc.courseId)!const students = []
+    const firstNames = ['张', '李', '王', '赵', '刘', '陈', '杨', '黄', '周', '吴', '徐', '孙', '马', '朱', '胡', '郭', '林', '何', '高', '梁']
+    const middleNames = ['伟', '芳', '娜', '秀', '敏', '静', '丽', '强', '磊', '军', '洋', '勇', '艳', '杰', '涛', '明', '超', '婷', '雪', '莉']
+    const lastNames = ['华', '英', '玲', '霞', '红', '梅', '兰', '萍', '云', '燕', '波', '鹏', '刚', '龙', '锋', '峰', '平', '辉', '娟', '莹']
+
+    for (let i = 1; i <= count; i++) {
+        const firstName = firstNames[Math.floor(Math.random() * firstNames.length)]
+        const middleName = middleNames[Math.floor(Math.random() * middleNames.length)]
+        const lastName = lastNames[Math.floor(Math.random() * lastNames.length)]
+
+        students.push({
+            id: i,
+            studentId: `2023${String(i).padStart(4, '0')}`,
+            name: i <= 20 ? `学生${String(i).padStart(3, '0')}` : `${firstName}${middleName}${lastName}`,
+            gender: i % 2 === 0 ? '女' : '男',
+            major: ['计算机科学', '软件工程', '数据科学', '人工智能', '网络工程'][Math.floor(Math.random() * 5)],
+            class: `202${Math.floor(i / 100)}班`,
+            email: `student${i}@school.edu`,
+            phone: `138${String(Math.floor(Math.random() * 100000000)).padStart(8, '0')}`,
+            deleted: 0
+        })
+    }
+    return students
+}
+
+// 课程数据
+export const mockCourses = [
+    { id: 1, courseId: 'C001', courseName: '高等数学A', credits: 5, department: '数学系' },
+    { id: 2, courseId: 'C002', courseName: '大学英语', credits: 3, department: '外语系' },
+    { id: 3, courseId: 'C003', courseName: 'Java程序设计', credits: 4, department: '计算机系' },
+    { id: 4, courseId: 'C004', courseName: '数据结构与算法', credits: 4, department: '计算机系' },
+    { id: 5, courseId: 'C005', courseName: '数据库原理', credits: 3, department: '计算机系' },
+    { id: 6, courseId: 'C006', courseName: '计算机网络', credits: 4, department: '计算机系' },
+    { id: 7, courseId: 'C007', courseName: '操作系统', credits: 4, department: '计算机系' },
+    { id: 8, courseId: 'C008', courseName: '软件工程', credits: 3, department: '计算机系' },
+    { id: 9, courseId: 'C009', courseName: '人工智能导论', credits: 3, department: '计算机系' },
+    { id: 10, courseId: 'C010', courseName: 'Web前端开发', credits: 3, department: '计算机系' }
+]
+
+// 教师数据
+export const mockTeachers = [
+    { id: 1, teacherId: 'T001', name: '张教授', title: '教授', department: '数学系', email: 'zhang@school.edu' },
+    { id: 2, teacherId: 'T002', name: '李副教授', title: '副教授', department: '外语系', email: 'li@school.edu' },
+    { id: 3, teacherId: 'T003', name: '王老师', title: '讲师', department: '计算机系', email: 'wang@school.edu' },
+    { id: 4, teacherId: 'T004', name: '赵教授', title: '教授', department: '计算机系', email: 'zhao@school.edu' },
+    { id: 5, teacherId: 'T005', name: '刘副教授', title: '副教授', department: '计算机系', email: 'liu@school.edu' },
+    { id: 6, teacherId: 'T006', name: '陈老师', title: '讲师', department: '计算机系', email: 'chen@school.edu' },
+    { id: 7, teacherId: 'T007', name: '杨教授', title: '教授', department: '计算机系', email: 'yang@school.edu' },
+    { id: 8, teacherId: 'T008', name: '黄副教授', title: '副教授', department: '计算机系', email: 'huang@school.edu' },
+    { id: 9, teacherId: 'T009', name: '周老师', title: '讲师', department: '计算机系', email: 'zhou@school.edu' },
+    { id: 10, teacherId: 'T010', name: '吴教授', title: '教授', department: '计算机系', email: 'wu@school.edu' }
+]
+
+// 教学班数据
+export const mockClasses = [
+    { id: 1, classId: '2023春-C001-01', semester: '2023春季', courseId: 1, teacherId: 1 },
+    { id: 2, classId: '2023春-C002-01', semester: '2023春季', courseId: 2, teacherId: 2 },
+    { id: 3, classId: '2023春-C003-01', semester: '2023春季', courseId: 3, teacherId: 3 },
+    { id: 4, classId: '2023秋-C004-01', semester: '2023秋季', courseId: 4, teacherId: 4 },
+    { id: 5, classId: '2023秋-C005-01', semester: '2023秋季', courseId: 5, teacherId: 5 }
+]
+
+// 生成成绩数据
+export const generateGrades = (students: any[]) => {
+    const grades: any[] = []
+    // 使用导出的课程和教学班数据，不再重复定义
+
+    let gradeId = 1
+    students.forEach(student => {
+        const numCourses = 3 + Math.floor(Math.random() * 3) // 每个学生3-5门课
+        const selectedClasses = teachingClasses.sort(() => 0.5 - Math.random()).slice(0, numCourses)
+
+        selectedClasses.forEach(tc => {
+            const course = courses.find(c => c.id === tc.courseId)!
+            const regular = 60 + Math.random() * 40
+            const midterm = 60 + Math.random() * 40
+            const lab = 60 + Math.random() * 40
+            const finalExam = 60 + Math.random() * 40
+            const comprehensive = regular * 0.2 + midterm * 0.2 + lab * 0.2 + finalExam * 0.4
+
+            let level = '不及格'
+            if (comprehensive >= 90) level = '优秀'
+            else if (comprehensive >= 80) level = '良好'
+            else if (comprehensive >= 70) level = '中等'
+            else if (comprehensive >= 60) level = '及格'
+
+            grades.push({
+                id: gradeId++,
+                studentId: student.id,
+                classId: tc.id,
+                courseName: course.name,
+                regularScore: Math.round(regular * 10) / 10,
+                midtermScore: Math.round(midterm * 10) / 10,
+                labScore: Math.round(lab * 10) / 10,
+                finalExamScore: Math.round(finalExam * 10) / 10,
+                comprehensiveScore: Math.round(comprehensive * 10) / 10,
+                level,
+                createdTime: new Date(Date.now() - Math.random() * 90 * 24 * 60 * 60 * 1000).toISOString(),
+                student,
+                teachingClass: tc,
+                course
+            })
+        })
+    })
+    return grades
+}
+
+// 用户数据
+export const mockUsers = [
+    { id: 1, username: 'admin', fullName: '系统管理员', email: 'admin@school.edu', status: 'ACTIVE', lastLoginTime: new Date().toISOString(), roles: [{ id: 2, roleName: '管理员' }] },
+    { id: 2, username: 'super_admin', fullName: '超级管理员', email: 'super@school.edu', status: 'ACTIVE', lastLoginTime: new Date(Date.now() - 3600000).toISOString(), roles: [{ id: 1, roleName: '超级管理员' }] },
+    { id: 3, username: 'academic_admin', fullName: '教务管理员', email: 'academic@school.edu', status: 'ACTIVE', lastLoginTime: new Date(Date.now() - 7200000).toISOString(), roles: [{ id: 3, roleName: '教务管理员' }] },
+    ...Array.from({ length: 10 }, (_, i) => ({
+        id: i + 4,
+        username: `teacher${String(i + 1).padStart(2, '0')}`,
+        fullName: `教师${String(i + 1).padStart(2, '0')}`,
+        email: `teacher${i + 1}@school.edu`,
+        status: 'ACTIVE',
+        lastLoginTime: new Date(Date.now() - Math.random() * 86400000).toISOString(),
+        roles: [{ id: 4, roleName: '教师' }]
+    })),
+    ...Array.from({ length: 5 }, (_, i) => ({
+        id: i + 14,
+        username: `student${String(i + 1).padStart(3, '0')}`,
+        fullName: `学生${String(i + 1).padStart(3, '0')}`,
+        email: `student${i + 1}@school.edu`,
+        status: 'ACTIVE',
+        lastLoginTime: new Date(Date.now() - Math.random() * 172800000).toISOString(),
+        roles: [{ id: 5, roleName: '学生' }]
+    })),
+    { id: 19, username: 'guest', fullName: '访客用户', email: 'guest@school.edu', status: 'ACTIVE', lastLoginTime: new Date(Date.now() - 86400000).toISOString(), roles: [{ id: 6, roleName: '访客' }] }
+]
+
+// 角色数据
+export const mockRoles = [
+    { id: 1, roleName: '超级管理员', roleCode: 'SUPER_ADMIN', description: '系统超级管理员，拥有所有权限', isSystemRole: true, status: 'ACTIVE', permissionCount: 51 },
+    { id: 2, roleName: '管理员', roleCode: 'ADMIN', description: '普通管理员，负责日常管理', isSystemRole: true, status: 'ACTIVE', permissionCount: 45 },
+    { id: 3, roleName: '教务管理员', roleCode: 'ACADEMIC_ADMIN', description: '教务处管理员，管理课程和教学班', isSystemRole: false, status: 'ACTIVE', permissionCount: 30 },
+    { id: 4, roleName: '教师', roleCode: 'TEACHER', description: '教师角色，可以管理所授课程的成绩', isSystemRole: false, status: 'ACTIVE', permissionCount: 15 },
+    { id: 5, roleName: '学生', roleCode: 'STUDENT', description: '学生角色，只能查看自己的成绩', isSystemRole: false, status: 'ACTIVE', permissionCount: 2 },
+    { id: 6, roleName: '访客', roleCode: 'GUEST', description: '访客角色，只读权限', isSystemRole: false, status: 'ACTIVE', permissionCount: 5 }
+]
+
+// 权限数据
+export const mockPermissions = [
+    // 用户管理
+    { id: 1, permissionCode: 'USER:MANAGE', permissionName: '用户管理', resourceType: 'MENU', description: '用户管理模块' },
+    { id: 2, permissionCode: 'USER:VIEW', permissionName: '查看用户', resourceType: 'USER', description: '查看用户列表和详情' },
+    { id: 3, permissionCode: 'USER:CREATE', permissionName: '创建用户', resourceType: 'USER', description: '创建新用户' },
+    { id: 4, permissionCode: 'USER:EDIT', permissionName: '编辑用户', resourceType: 'USER', description: '编辑用户信息' },
+    { id: 5, permissionCode: 'USER:DELETE', permissionName: '删除用户', resourceType: 'USER', description: '删除用户' },
+
+    // 角色管理
+    { id: 7, permissionCode: 'ROLE:MANAGE', permissionName: '角色管理', resourceType: 'MENU', description: '角色管理模块' },
+    { id: 8, permissionCode: 'ROLE:VIEW', permissionName: '查看角色', resourceType: 'ROLE', description: '查看角色列表和详情' },
+    { id: 9, permissionCode: 'ROLE:CREATE', permissionName: '创建角色', resourceType: 'ROLE', description: '创建新角色' },
+
+    // 学生管理
+    { id: 15, permissionCode: 'STUDENT:MANAGE', permissionName: '学生管理', resourceType: 'MENU', description: '学生管理模块' },
+    { id: 16, permissionCode: 'STUDENT:VIEW', permissionName: '查看学生', resourceType: 'STUDENT', description: '查看学生列表和详情' },
+    { id: 17, permissionCode: 'STUDENT:CREATE', permissionName: '创建学生', resourceType: 'STUDENT', description: '添加新学生' },
+
+    // 成绩管理
+    { id: 37, permissionCode: 'GRADE:MANAGE', permissionName: '成绩管理', resourceType: 'MENU', description: '成绩管理模块' },
+    { id: 38, permissionCode: 'GRADE:VIEW', permissionName: '查看成绩', resourceType: 'GRADE', description: '查看成绩信息' },
+    { id: 41, permissionCode: 'GRADE:CREATE', permissionName: '录入成绩', resourceType: 'GRADE', description: '录入学生成绩' },
+
+    // 系统日志
+    { id: 47, permissionCode: 'LOG:MANAGE', permissionName: '日志管理', resourceType: 'MENU', description: '系统日志管理' },
+    { id: 48, permissionCode: 'LOG:VIEW', permissionName: '查看日志', resourceType: 'LOG', description: '查看系统操作日志' }
+]
+
+// 审计日志数据
+export const mockLogs = [
+    ...Array.from({ length: 50 }, (_, i) => {
+        const types = ['LOGIN', 'CREATE', 'UPDATE', 'DELETE', 'VIEW', 'EXPORT', 'IMPORT']
+        const users = ['admin', 'super_admin', 'teacher01', 'student001', 'academic_admin']
+        const results = i % 10 === 0 ? 'FAILED' : 'SUCCESS'
+        const type = types[Math.floor(Math.random() * types.length)]
+
+        return {
+            id: i + 1,
+            userId: Math.floor(Math.random() * 19) + 1,
+            username: users[Math.floor(Math.random() * users.length)],
+            operationType: type,
+            targetType: type === 'LOGIN' ? 'SYSTEM' : ['GRADE', 'STUDENT', 'USER', 'ROLE'][Math.floor(Math.random() * 4)],
+            targetId: type === 'LOGIN' ? null : Math.floor(Math.random() * 100),
+            operationDesc: `${type === 'LOGIN' ? '用户登录系统' : `${type}操作`}`,
+            ipAddress: `192.168.1.${Math.floor(Math.random() * 255)}`,
+            executionResult: results,
+            errorMessage: results === 'FAILED' ? '权限不足' : null,
+            executionTimeMs: Math.floor(Math.random() * 500) + 50,
+            createdTime: new Date(Date.now() - i * 3600000).toISOString()
+        }
+    })
+]
+
+// 生成所有Mock数据
+export const initMockData = () => {
+    const students = generateStudents(300)
+    const grades = generateGrades(students)
+
+    return {
+        students,
+        grades,
+        users: mockUsers,
+        roles: mockRoles,
+        permissions: mockPermissions,
+        logs: mockLogs
+    }
+}
+
+// 存储到localStorage
+export const saveMockData = () => {
+    const data = initMockData()
+    localStorage.setItem('mockData', JSON.stringify(data))
+    return data
+}
+
+// 从localStorage读取
+export const loadMockData = () => {
+    const stored = localStorage.getItem('mockData')
+    if (stored) {
+        return JSON.parse(stored)
+    }
+    return saveMockData()
+}
+
+// 获取Mock数据
+export const getMockData = () => {
+    if (typeof window === 'undefined') return initMockData()
+    return loadMockData()
+}
